@@ -1,0 +1,315 @@
+<!-- 🎉 Complete HTML (copy into index.html) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday Advaitha!</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom right, #ffe0f0, #ffe8cc);
+      font-family: 'Comic Sans MS', cursive;
+      overflow-x: hidden;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: #555;
+      margin-top: 20px;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    .quote {
+      font-size: 1.2rem;
+      color: #777;
+      font-style: italic;
+      animation: fadeIn 2.5s ease-in-out;
+      margin-bottom: 20px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .name-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-top: 60px;
+      position: relative;
+      z-index: 2;
+      flex-wrap: wrap;
+    }
+
+    .emoji {
+      font-size: 2.2rem;
+      animation: popIn 1s ease-in-out;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.5); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .balloon-letter {
+      position: relative;
+      width: 70px;
+      height: 90px;
+      background: #ff7eb3;
+      border-radius: 60% 60% 50% 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: white;
+      opacity: 0;
+      transform: translate(var(--x), var(--y));
+      animation: floatIn 2s forwards ease-out;
+    }
+
+    .balloon-letter::after {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 14px;
+      width: 8px;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      transform: rotate(45deg);
+    }
+
+    .balloon-letter svg {
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    @keyframes floatIn {
+      100% {
+        transform: translate(0, 0);
+        opacity: 1;
+      }
+    }
+
+    .cake-container {
+      margin: 60px auto 30px;
+      width: 200px;
+      position: relative;
+      animation: slideUp 2s ease-out forwards;
+      opacity: 0;
+      transform: translateY(100px);
+      z-index: 1;
+    }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .tier {
+      width: 100%;
+      height: 40px;
+      border-radius: 10px;
+      margin-bottom: 5px;
+      box-shadow: 0 4px #e91e63;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .tier:nth-child(1) {
+      width: 60%;
+      margin: 0 auto 5px;
+      background: #ffb6c1;
+    }
+
+    .tier:nth-child(2) {
+      width: 80%;
+      margin: 0 auto 5px;
+      background: #ff69b4;
+    }
+
+    .tier:nth-child(3) {
+      width: 100%;
+      background: #ff1493;
+    }
+
+    .candles {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .candle {
+      width: 6px;
+      height: 20px;
+      background: #fff;
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .candle::after {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 10px;
+      background: gold;
+      border-radius: 50%;
+      animation: flicker 0.5s infinite alternate;
+    }
+
+    @keyframes flicker {
+      0% { opacity: 0.7; transform: scale(1); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    canvas.confetti {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+
+<h1> HAPPY BIRTHDAY!! </h1>
+  <h2>Live longer, happier 💖  HEART FELT WISHES FROM LALITH</h2>
+  <div class="quote">“Count your life by smiles, not tears. Count your age by friends, not years.”</div>
+
+  <!-- 🎈 Emoji + Name -->
+  <div class="name-row" id="nameRow">
+    <div class="emoji">🥰</div>
+    <div class="emoji">💖</div>
+    <!-- Letters will be injected here -->
+    <div class="emoji">💗</div>
+    <div class="emoji">💞</div>
+  </div>
+
+  <!-- 🎂 Cake -->
+  <div class="cake-container" id="cake">
+    <div class="candles">
+      <div class="candle"></div>
+      <div class="candle"></div>
+      <div class="candle"></div>
+    </div>
+    <div class="tier"></div>
+    <div class="tier"></div>
+    <div class="tier"></div>
+  </div>
+
+  <!-- 🎊 Confetti -->
+  <canvas class="confetti" id="confetti"></canvas>
+
+  <script>
+    const nameRow = document.getElementById("nameRow");
+    const letters = "ADVAITHA".split("");
+
+    // Insert letter balloons between the first 2 emojis and last 2
+    const beforeEmojis = nameRow.children[0];
+    const afterEmojis = nameRow.children[2];
+
+    letters.forEach((char, index) => {
+      const balloon = document.createElement("div");
+      balloon.classList.add("balloon-letter");
+      balloon.textContent = char;
+
+      // Random starting offset
+      balloon.style.setProperty('--x', `${(Math.random() * 400 - 200)}px`);
+      balloon.style.setProperty('--y', `${(Math.random() * 400 - 300)}px`);
+      balloon.style.animationDelay = `${index * 0.3}s`;
+
+      // Add SVG balloon string
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("width", "20");
+      svg.setAttribute("height", "40");
+
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", "M10 0 Q12 10, 10 20 Q8 30, 10 40");
+      path.setAttribute("stroke", "#333");
+      path.setAttribute("stroke-width", "1.5");
+      path.setAttribute("fill", "none");
+
+      svg.appendChild(path);
+      balloon.appendChild(svg);
+
+      // Insert between emojis
+      nameRow.insertBefore(balloon, afterEmojis);
+    });
+
+    // 🎊 Confetti system
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const confetti = [];
+
+    function randomColor() {
+      const colors = ["#ff4081", "#ff80ab", "#ffcccb", "#ffc107", "#f06292"];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function createConfettiPiece() {
+      return {
+        x: Math.random() * canvas.width,
+        y: -10,
+        size: Math.random() * 6 + 4,
+        color: randomColor(),
+        velocityY: Math.random() * 3 + 2,
+        velocityX: (Math.random() - 0.5) * 5,
+        rotation: Math.random() * 360
+      };
+    }
+
+    function startConfetti() {
+      for (let i = 0; i < 550; i++) {  // MORE POPPERS 💥
+        confetti.push(createConfettiPiece());
+      }
+      requestAnimationFrame(updateConfetti);
+    }
+
+    function updateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confetti.forEach((p, i) => {
+        p.y += p.velocityY;
+        p.x += p.velocityX;
+        p.rotation += 2;
+        ctx.fillStyle = p.color;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+        ctx.restore();
+        if (p.y > canvas.height) confetti.splice(i, 1);
+      });
+      if (confetti.length > 0) requestAnimationFrame(updateConfetti);
+    }
+
+    setTimeout(() => {
+      document.getElementById("cake").style.opacity = 1;
+      document.getElementById("cake").style.transform = "translateY(0)";
+      startConfetti();
+    }, 3000);
+  </script>
+</body>
+</html>         
